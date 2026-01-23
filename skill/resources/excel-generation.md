@@ -1,0 +1,1 @@
+介绍使用 openpyxl 和 xlsxwriter 库创建Excel文件的方法。openpyxl适合读写已有文件和复杂格式设置，xlsxwriter专注于高性能写入。创建多工作表示例：使用 workbook.create_sheet() 方法添加新工作表，设置单元格格式、合并单元格、添加公式、设置列宽等。数据写入优化：批量写入、使用数据验证、条件格式化。

@@ -1,0 +1,13 @@
+{
+  "buyer_name": "购买方名称",
+  "invoice_date": "2024-01-15",
+  "invoice_type": "增值税专用发票",
+  "invoice_number": "12345678",
+  "invoice_code": "1100221130",
+  "amount": 1000.00,
+  "tax_rate": "13%",
+  "tax": 130.00,
+  "total": 1130.00,
+  "seller_name": "销售方名称",
+  "seller_tax_id": "统一社会信用代码"
+}

@@ -1,0 +1,21 @@
+{
+  "output_filename": "expense_report.xlsx",
+  "sheets": [
+    {
+      "name": "发票明细",
+      "columns": ["序号", "购买方名称", "开票日期", "发票类型", "发票号码", "金额", "税额", "价税合计"],
+      "sort_by": "开票日期",
+      "group_by": "发票类型"
+    },
+    {
+      "name": "月度汇总",
+      "columns": ["月份", "发票数量", "总金额", "总税额", "价税合计"],
+      "aggregation": "monthly"
+    }
+  ],
+  "formatting": {
+    "header_color": "4CAF50",
+    "date_format": "YYYY-MM-DD",
+    "currency_format": "¥#,##0.00"
+  }
+}
