@@ -17,7 +17,7 @@ description: 基于示例图片分析提示词，用户修改文案后替换新�
 
 **必需**：
 - 图像生成 API：`https://llm.tokencloud.ai/v1/images/generations`
-- API Key：`sk-RPo8Q8Lf9_SKoNMSjo5DNA`
+- API Key：`xxxx`
 - 模型：`openai/z-images`
 
 **可选**：
