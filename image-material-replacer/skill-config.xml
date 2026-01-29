@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill>
+  <metadata>
+    <name>图片素材替换生成器</name>
+    <description>基于示例图片分析提示词，用户修改文案后替换新素材，生成16:9新图片</description>
+    <version>1.0.0</version>
+    <author>Karma AI</author>
+    <category>图像处理</category>
+    <tags>图像生成,素材替换,提示词分析,图生图</tags>
+  </metadata>
+
+  <workflow>
+    <step id="1" name="上传并分析示例图片">
+      <description>用户上传示例图片，调用图片提示词反向分析器分析</description>
+      <action>
+        <type>request_image_upload</type>
+        <prompt>请上传一张示例图片，我将分析其中的视觉元素和设计风格。</prompt>
+        <variable>example_image</variable>
+      </action>
+      <action>
+        <type>call_skill</type>
+        <skill_name>图片提示词反向分析器</skill_name>
+        <input>
+          <image>${example_image}</image>
+        </input>
+        <output_variable>analyzed_prompt</output_variable>
+      </action>
+      <action>
+        <type>display_result</type>
+        <message>
+✅ 示例图片分析完成！
+
+📋 **提取的提示词信息：**
+${analyzed_prompt}
+
+---
+接下来请提供新的标题和描述文案。
+        </message>
+      </action>
+    </step>
+
+    <step id="2" name="修改标题和描述文案">
+      <description>用户手动输入新的标题和描述内容</description>
+      <action>
+        <type>request_text_input</type>
+        <prompt>请输入新的**标题**（用于图片主题）：</prompt>
+        <variable>new_title</variable>
+        <required>true</required>
+      </action>
+      <action>
+        <type>request_text_input</type>
+        <prompt>请输入新的**描述文案**（详细描述想要的画面内容）：</prompt>
+        <variable>new_description</variable>
+        <required>true</required>
+        <multiline>true</multiline>
+      </action>
+      <action>
+        <type>display_result</type>
+        <message>
+✅ 文案已记录：
+- **标题**: ${new_title}
+- **描述**: ${new_description}
+
+接下来请上传新的素材图片。
+        </message>
+      </action>
+    </step>
+
+    <step id="3" name="上传新素材图片">
+      <description>用户上传要替换进去的新素材图片</description>
+      <action>
+        <type>request_image_upload</type>
+        <prompt>请上传新的素材图片（将作为图生图的参考素材）：</prompt>
+        <variable>material_image</variable>
+      </action>
+      <action>
+        <type>analyze_image</type>
+        <input>${material_image}</input>
+        <extract>主要元素、颜色、风格</extract>
+        <output_variable>material_features</output_variable>
+      </action>
+      <action>
+        <type>display_result</type>
+        <message>
+✅ 素材图片已上传！
+
+📸 **素材特征：**
+${material_features}
+
+准备生成新图片...
+        </message>
+      </action>
+    </step>
+
+    <step id="4" name="生成新图片">
+      <description>结合分析的提示词、新文案和素材图片，生成16:9新图</description>
+      <action>
+        <type>compose_prompt</type>
+        <template>
+标题: ${new_title}
+
+描述: ${new_description}
+
+风格参考: ${analyzed_prompt}
+
+素材元素: ${material_features}
+
+要求:
+- 保持原图的整体风格和氛围
+- 融合新素材图片中的关键元素
+- 画面构图合理，16:9横向布局
+- 高质量、细节丰富
+        </template>
+        <output_variable>final_prompt</output_variable>
+      </action>
+      <action>
+        <type>call_tool</type>
+        <tool>mcp__tool-gateway__gemini_generate_image</tool>
+        <parameters>
+          <prompt>${final_prompt}</prompt>
+          <aspectRatio>16:9</aspectRatio>
+          <imageSize>4K</imageSize>
+        </parameters>
+        <output_variable>generated_image</output_variable>
+      </action>
+      <action>
+        <type>display_result</type>
+        <message>
+🎨 **新图片生成成功！**
+
+📐 尺寸: 16:9 (4K)
+📝 使用的提示词:
+${final_prompt}
+
+---
+生成的图片:
+${generated_image}
+
+如需重新生成或调整，请告诉我！
+        </message>
+      </action>
+    </step>
+  </workflow>
+
+  <usage_examples>
+    <example>
+      <scenario>电商产品图替换</scenario>
+      <description>上传示例产品图，分析其风格，然后用新产品照片替换，生成相似风格的新产品图</description>
+    </example>
+    <example>
+      <scenario>社交媒体配图</scenario>
+      <description>基于优质配图的风格，替换品牌素材，快速生成统一风格的系列配图</description>
+    </example>
+    <example>
+      <scenario>广告创意快速迭代</scenario>
+      <description>保持广告创意风格，替换不同产品素材，批量生成广告图</description>
+    </example>
+  </usage_examples>
+
+  <notes>
+    <note>生成时间约30-90秒，请耐心等待</note>
+    <note>素材图片质量越高，生成效果越好</note>
+    <note>支持中英文文案输入</note>
+    <note>可以多次运行第4步尝试不同效果</note>
+  </notes>
+</skill>
